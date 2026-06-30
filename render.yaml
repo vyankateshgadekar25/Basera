@@ -1,0 +1,30 @@
+# Render Blueprint — one-click deploy for the Basera API.
+# Docs: https://render.com/docs/blueprint-spec
+# Free tier: 750 hours/month, no credit card required.
+# Cold starts after 15 min idle — see DEPLOY.md "Keep it warm" section.
+
+services:
+  - type: web
+    name: basera-api
+    runtime: docker
+    plan: free
+    region: singapore       # closest to India; change to oregon/frankfurt as needed
+    rootDir: server
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: JWT_SECRET
+        generateValue: true        # Render makes a strong secret once
+      - key: DATABASE_URL
+        sync: false                # set manually in Render dashboard (Neon URL)
+      - key: GMAIL_USER
+        sync: false                # set manually (your Gmail)
+      - key: GMAIL_APP_PASSWORD
+        sync: false                # set manually (App Password, 16 chars)
+      - key: PUBLIC_APP_URL
+        sync: false                # e.g. https://basera.vercel.app

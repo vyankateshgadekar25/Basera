@@ -1,0 +1,211 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Design tokens ---------- */
+:root {
+  --accent: 30 169 124;            /* teal-green 500 */
+  --accent-strong: 19 138 102;     /* teal-green 600 */
+  --accent-soft: 212 246 231;      /* teal-green 100 */
+  --ink: 14 27 26;
+  --cream: 251 248 242;
+  --ring: 30 169 124 / 0.18;
+  --ease-out-quart: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::selection { background: rgb(var(--accent) / 0.22); color: rgb(var(--ink)); }
+
+@layer base {
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body {
+    @apply text-ink-900 antialiased;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(30,169,124,0.07), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, rgba(236,220,182,0.35), transparent 60%),
+      #fbf8f2;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+
+  /* Unified focus-visible — keyboard users get the same affordance as mouse hover */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(var(--ring));
+    border-color: rgb(var(--accent));
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+  }
+}
+
+/* ---------- Components ---------- */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-accent-600 text-white font-semibold py-2.5 px-5 rounded-full shadow-ambient disabled:opacity-50 disabled:cursor-not-allowed;
+    transition: background-color 150ms ease-out, transform 100ms ease-out, box-shadow 200ms ease-out;
+  }
+  .btn-primary:hover { background-color: rgb(var(--accent-strong)); }
+  .btn-primary:active:not(:disabled) { transform: scale(0.97); }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-white text-ink-800 font-semibold py-2.5 px-5 rounded-full border border-ink-900/10 shadow-ambient disabled:opacity-50;
+    transition: background-color 150ms ease-out, transform 100ms ease-out, border-color 150ms ease-out;
+  }
+  .btn-secondary:hover { background-color: #f6efdf; border-color: rgba(14,27,26,0.18); }
+  .btn-secondary:active:not(:disabled) { transform: scale(0.97); }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 px-5 rounded-full shadow-ambient;
+    transition: background-color 150ms ease-out, transform 100ms ease-out;
+  }
+  .btn-danger:active { transform: scale(0.97); }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 text-ink-700 hover:text-ink-900 hover:bg-ink-900/5 font-medium py-2 px-3 rounded-lg;
+    transition: background-color 150ms ease-out, color 150ms ease-out;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl border border-ink-900/5;
+    box-shadow: 0 1px 3px rgba(14,27,26,0.06);
+    transition: box-shadow 200ms ease-out, transform 200ms var(--ease-out-quart);
+  }
+
+  .card-hover {
+    @apply bg-white rounded-2xl border border-ink-900/5 block;
+    box-shadow: 0 1px 3px rgba(14,27,26,0.06);
+    will-change: transform;
+    transition:
+      transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 200ms ease-out;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(14,27,26,0.12);
+    border-color: rgba(30,169,124,0.20);
+  }
+
+  /* Input — quiet focus, accent ring */
+  .input {
+    @apply w-full px-4 py-3 bg-cream-50 border border-ink-900/10 rounded-xl text-sm outline-none placeholder:text-ink-900/40 text-ink-900;
+    transition: border-color 150ms ease-out, background-color 150ms ease-out, box-shadow 150ms ease-out;
+  }
+  .input:hover { border-color: rgba(14,27,26,0.22); }
+  .input:focus, .input:focus-visible {
+    background-color: #ffffff;
+    border-color: rgb(var(--accent));
+    box-shadow: 0 0 0 3px rgb(var(--accent) / 0.15);
+  }
+
+  .input-error { @apply border-red-300; }
+  .input-error:focus { box-shadow: 0 0 0 3px rgba(239,68,68,0.18); border-color: rgb(239,68,68); }
+
+  .label { @apply block text-sm font-medium text-ink-800 mb-1.5; }
+
+  .badge { @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold; }
+  .badge-green  { @apply bg-emerald-50 text-emerald-700 border border-emerald-200; }
+  .badge-yellow { @apply bg-amber-50 text-amber-700 border border-amber-200; }
+  .badge-blue   { @apply bg-blue-50 text-blue-700 border border-blue-200; }
+  .badge-red    { @apply bg-red-50 text-red-700 border border-red-200; }
+  .badge-gray   { @apply bg-cream-100 text-ink-700 border border-ink-900/10; }
+
+  .page-container { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8; }
+
+  .section-title { @apply text-xl font-display font-semibold text-ink-900 tracking-tight; }
+  .section-subtitle { @apply text-sm text-ink-700/60 mt-1; }
+
+  .stat-card { @apply bg-white rounded-2xl p-6 border border-ink-900/5 shadow-ambient; }
+  .stat-value { @apply text-2xl font-bold text-ink-900; }
+  .stat-label { @apply text-sm text-ink-700/60 mt-1; }
+
+  .table-header { @apply text-left text-xs font-semibold text-ink-700/60 uppercase tracking-wider py-3 px-4; }
+  .table-cell   { @apply py-3 px-4 text-sm text-ink-800 border-b border-ink-900/5; }
+
+  .modal-overlay {
+    @apply fixed inset-0 bg-ink-900/40 backdrop-blur-md z-50 flex items-center justify-center p-4;
+    animation: fade-in 200ms ease-out;
+  }
+  .modal-content {
+    @apply bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto;
+    animation: pop-in 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Sidebar / nav link base */
+  .sidebar-link {
+    @apply relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-ink-700;
+    transition: color 150ms ease-out, background-color 150ms ease-out;
+  }
+  .sidebar-link:hover { color: rgb(var(--accent-strong)); }
+  .sidebar-link-active { color: rgb(var(--accent-strong)); }
+  .sidebar-link-inactive { @apply text-ink-700; }
+
+  /* Skeleton shimmer card matching real card dimensions */
+  .skeleton {
+    background:
+      linear-gradient(90deg,
+        rgba(14,27,26,0.04) 0%,
+        rgba(14,27,26,0.08) 50%,
+        rgba(14,27,26,0.04) 100%);
+    background-size: 800px 100%;
+    animation: shimmer 1.6s linear infinite;
+    border-radius: 8px;
+  }
+
+  /* Stagger entry — used by IntersectionObserver-attached items */
+  .stagger-item {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 350ms var(--ease-out-quart), transform 350ms var(--ease-out-quart);
+    will-change: opacity, transform;
+  }
+  .stagger-item.is-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Keyframes (reused by tailwind animation utilities too) ---------- */
+@keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+@keyframes idle-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in      { animation: fade-in 250ms ease-out both; }
+.animate-fade-up      { animation: fade-up 350ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-pop-in       { animation: pop-in 250ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-idle-float   { animation: idle-float 3s ease-in-out infinite; }
+.animate-slide-in     { animation: slide-in-right 250ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(14,27,26,0.18); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(14,27,26,0.3); }
+
+/* ---------- Reduced motion — last so it wins ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .stagger-item { opacity: 1; transform: none; }
+}

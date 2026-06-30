@@ -1,0 +1,43 @@
+# Koyeb manifest — alternative free backend host that does NOT sleep.
+# Free tier (Jan 2026): 1 service · 0.1 vCPU · 256 MB RAM · always-on · no card.
+# Push code to GitHub, then on koyeb.com → "Create App" → import this file.
+#
+# Docs: https://www.koyeb.com/docs/build-and-deploy/koyeb-yaml
+
+services:
+  - name: basera-api
+    type: web
+    instance_type: free
+    regions: [sin]                 # Singapore — closest to India
+    routes:
+      - path: /
+        port: 4000
+    ports:
+      - port: 4000
+        protocol: http
+    health_checks:
+      - grace_period: 20
+        interval: 30
+        restart_limit: 3
+        timeout: 5
+        tcp:
+          port: 4000
+    docker:
+      dockerfile: server/Dockerfile
+      context: server
+    env:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "4000"
+      - key: JWT_SECRET
+        # Replace with a long random string — Koyeb dashboard supports secrets.
+        secret: jwt-secret
+      - key: DATABASE_URL
+        secret: database-url
+      - key: GMAIL_USER
+        secret: gmail-user
+      - key: GMAIL_APP_PASSWORD
+        secret: gmail-app-password
+      - key: PUBLIC_APP_URL
+        secret: public-app-url
