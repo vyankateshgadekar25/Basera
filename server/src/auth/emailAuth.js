@@ -1,22 +1,4 @@
-const nodemailer = require('nodemailer');
-
-let transporterPromise = null;
-
-function getTransporter() {
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) return null;
-  if (!transporterPromise) {
-    transporterPromise = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD.replace(/\s+/g, ''),
-      },
-    });
-  }
-  return transporterPromise;
-}
+const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
 
 function buildHtml(otp, name) {
   const appUrl = process.env.PUBLIC_APP_URL || '#';
@@ -60,21 +42,35 @@ function buildHtml(otp, name) {
 }
 
 async function sendEmailOTP(email, otp, name) {
-  const transporter = getTransporter();
-  if (!transporter) {
-    return { success: false, error: 'GMAIL_USER / GMAIL_APP_PASSWORD not configured' };
+  if (!process.env.BREVO_API_KEY || !process.env.BREVO_SENDER_EMAIL) {
+    return { success: false, error: 'BREVO_API_KEY / BREVO_SENDER_EMAIL not configured' };
   }
+
   try {
-    await transporter.sendMail({
-      from: `"Basera" <${process.env.GMAIL_USER}>`,
-      to: email,
-      subject: `Basera sign-in code: ${otp}`,
-      text: `Your Basera sign-in code is ${otp}. It expires in 10 minutes.`,
-      html: buildHtml(otp, name),
+    const response = await fetch(BREVO_API_URL, {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': process.env.BREVO_API_KEY,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: { name: 'Basera', email: process.env.BREVO_SENDER_EMAIL },
+        to: [{ email }],
+        subject: `Basera sign-in code: ${otp}`,
+        htmlContent: buildHtml(otp, name),
+        textContent: `Your Basera sign-in code is ${otp}. It expires in 10 minutes.`,
+      }),
     });
+
+    if (!response.ok) {
+      const errBody = await response.text();
+      throw new Error(`Brevo ${response.status}: ${errBody}`);
+    }
+
     return { success: true };
   } catch (error) {
-    console.error('Gmail send error:', error.message);
+    console.error('Brevo send error:', error.message);
     return { success: false, error: error.message };
   }
 }
