@@ -25,7 +25,7 @@ a warm, distinctive identity, and a **zero-rupee deploy path on Render + Vercel
 | Frontend | React 18 + Vite + Tailwind CSS |
 | Backend | Node.js + Express |
 | Database | PostgreSQL |
-| Auth | Phone OTP + JWT |
+| Auth | Email OTP + JWT |
 
 ## Quick Start
 
@@ -88,7 +88,6 @@ All motion is `transform` + `opacity` only — no layout thrash on cards. A glob
 - Cannot delete properties with active tenants
 
 ## Production Checklist
-- [ ] Switch from debug OTP to MSG91/Twilio SMS
 - [ ] Add file upload for payment screenshots (S3 / R2)
 - [ ] Cron for auto bill generation (1st of month)
 - [ ] Rate limiting on auth endpoints
